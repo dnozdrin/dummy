@@ -23,5 +23,5 @@ func Test_hello(t *testing.T) {
 	rr := httptest.NewRecorder()
 	handler.ServeHTTP(rr, req)
 
-	assert.Equal(t, "hello", string(rr.Body.Bytes()))
+	assert.Equal(t, "hello", rr.Body.String())
 }
