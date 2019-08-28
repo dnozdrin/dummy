@@ -1,2 +1,2 @@
 # dummy
-dummy http service
+Golang dummy http service
