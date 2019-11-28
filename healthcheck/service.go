@@ -36,11 +36,7 @@ func (s *service) Run(ctx context.Context, wg *sync.WaitGroup) {
 		defer wg.Done()
 		log.Debug("healthcheck service addr:", s.http.Addr)
 		err := s.http.ListenAndServe()
-		if err != nil {
-			log.Error("healthcheck service end run:", err.Error())
-			return
-		}
-		log.Info("healthcheck service: end run")
+		log.Info("healthcheck service end run:", err)
 	}()
 
 	go func() {

@@ -40,12 +40,7 @@ func (s *service) Run(ctx context.Context, wg *sync.WaitGroup) {
 		defer wg.Done()
 		log.Debug("prometheus service addr:", s.http.Addr)
 		err := s.http.ListenAndServe()
-		if err != nil {
-			s.runErr = err
-			log.Error("prometheus service end run:", err.Error())
-			return
-		}
-		log.Info("prometheus service: end run")
+		log.Info("prometheus service end run:", err)
 	}()
 
 	go func() {
