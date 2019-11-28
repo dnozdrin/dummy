@@ -9,7 +9,7 @@ import (
 )
 
 func Test_hello(t *testing.T) {
-	srv := service{}
+	srv := Service{}
 
 	// check http
 	req, err := http.NewRequest("GET", "/hello", nil)

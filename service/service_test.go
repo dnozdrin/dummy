@@ -10,14 +10,14 @@ import (
 )
 
 func TestService_StatusCheckReadiness(t *testing.T) {
-	var srv service
+	var srv Service
 
 	srv.readiness = false
-	assert.Equal(t, "service is't ready yet", srv.HealthCheck().Error())
+	assert.Equal(t, "Service is't ready yet", srv.HealthCheck().Error())
 }
 
 func TestService_StatusCheckRunErr(t *testing.T) {
-	var srv service
+	var srv Service
 
 	srv.readiness = true
 
@@ -31,11 +31,11 @@ func TestService_StatusCheckRunErr(t *testing.T) {
 	assert.Nil(t, srv.HealthCheck())
 
 	srv.runErr = errors.New("some run error")
-	assert.Equal(t, "run service issue", srv.HealthCheck().Error())
+	assert.Equal(t, "run Service issue", srv.HealthCheck().Error())
 }
 
 func TestService_StatusCheckDB(t *testing.T) {
-	var srv service
+	var srv Service
 
 	srv.readiness = true
 
@@ -51,7 +51,7 @@ func TestService_StatusCheckDB(t *testing.T) {
 }
 
 func TestService_StatusCheckCache(t *testing.T) {
-	var srv service
+	var srv Service
 
 	srv.readiness = true
 

@@ -4,6 +4,6 @@ import (
 	"net/http"
 )
 
-func (s *service) hello(w http.ResponseWriter, _ *http.Request) {
+func (s *Service) hello(w http.ResponseWriter, _ *http.Request) {
 	w.Write([]byte("hello"))
 }
