@@ -1,0 +1,17 @@
+schema {
+    query: Query
+}
+
+type Query {
+    hello(Name: String!): Message!
+}
+
+type Message {
+    data: String!
+    error: Error
+}
+
+type Error {
+    code: Int!
+    message: String!
+}

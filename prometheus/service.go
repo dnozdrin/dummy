@@ -8,23 +8,18 @@ import (
 	"sync"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
+	log "github.com/sirupsen/logrus"
 )
 
-type Service interface {
-	Run(ctx context.Context, wg *sync.WaitGroup)
-	HealthCheck() error
-}
-
-type service struct {
+type Service struct {
 	http      *http.Server
 	runErr    error
 	readiness bool
 }
 
-func New(port int) Service {
-	return &service{
+func New(port int) *Service {
+	return &Service{
 		http: &http.Server{
 			Addr:    fmt.Sprintf(":%d", port),
 			Handler: handler(),
@@ -32,7 +27,7 @@ func New(port int) Service {
 	}
 }
 
-func (s *service) Run(ctx context.Context, wg *sync.WaitGroup) {
+func (s *Service) Run(ctx context.Context, wg *sync.WaitGroup) {
 	wg.Add(1)
 	log.Info("prometheus service: begin run")
 
@@ -40,7 +35,8 @@ func (s *service) Run(ctx context.Context, wg *sync.WaitGroup) {
 		defer wg.Done()
 		log.Debug("prometheus service addr:", s.http.Addr)
 		err := s.http.ListenAndServe()
-		log.Info("prometheus service end run:", err)
+		s.runErr = err
+		log.Info("prometheus service: end run >", err)
 	}()
 
 	go func() {
@@ -48,7 +44,7 @@ func (s *service) Run(ctx context.Context, wg *sync.WaitGroup) {
 		sdCtx, _ := context.WithTimeout(context.Background(), 5*time.Second) // nolint
 		err := s.http.Shutdown(sdCtx)
 		if err != nil {
-			log.Error("prometheus service shutdown error:", err.Error())
+			log.Info("prometheus service shutdown (", err, ")")
 		}
 	}()
 
@@ -61,7 +57,7 @@ func handler() http.Handler {
 	return handler
 }
 
-func (s *service) HealthCheck() error {
+func (s *Service) HealthCheck() error {
 	if !s.readiness {
 		return errors.New("prometheus service is't ready yet")
 	}

@@ -1,7 +1,7 @@
 ############################
 # STEP 1 build executable binary
 ############################
-FROM golang:1.11.2-alpine as builder
+FROM golang:1.13.5-alpine as builder
 
 # Install SSL ca certificates.
 # Ca-certificates is required to call HTTPS endpoints.
@@ -32,6 +32,8 @@ COPY --from=builder /go/src/github.com/companyname/dummy_project/version /
 
 # Port on which the service will be exposed.
 EXPOSE 8080
+EXPOSE 8081
+EXPOSE 8090
 EXPOSE 8888
 EXPOSE 9100
 

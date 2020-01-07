@@ -1,0 +1,15 @@
+syntax = "proto3";
+package authorisationservice;
+option go_package = "api";
+
+message HelloRequest {
+	string Name = 1;
+}
+
+message HelloResponse {
+	string Message = 1;
+}
+
+service DummyService {
+	rpc SayHello(HelloRequest) returns (HelloResponse);
+}

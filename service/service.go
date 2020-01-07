@@ -1,92 +1,47 @@
 package service
 
 import (
-	"context"
-	"errors"
-	"fmt"
-	"net/http"
-	"sync"
-	"time"
-
-	log "github.com/Sirupsen/logrus"
-	"github.com/akhripko/dummy/metrics"
-	"github.com/gorilla/mux"
+	"github.com/akhripko/dummy/models"
+	"github.com/pkg/errors"
 )
 
-func New(port int, db DB, cache Cache) *Service {
-	httpSrv := http.Server{
-		Addr: fmt.Sprintf(":%d", port),
+type Storage interface {
+	Check() error
+	Hello(name string) (*models.HelloMessage, error)
+}
+
+type Cache interface {
+	Check() error
+	Read(name string) (string, error)
+	WriteTTL(name, msg string, ttl int) error
+}
+
+func New(storage Storage, cache Cache) (*Service, error) {
+	// build service
+	srv := Service{
+		storage:   storage,
+		cache:     cache,
+		readiness: true,
 	}
 
-	var srv Service
-	srv.setupHTTP(&httpSrv)
-	srv.db = db
-	srv.cache = cache
-
-	return &srv
+	return &srv, nil
 }
 
 type Service struct {
-	http      *http.Server
-	runErr    error
-	readiness bool
-	db        DB
+	storage   Storage
 	cache     Cache
-}
-
-func (s *Service) setupHTTP(srv *http.Server) {
-	srv.Handler = s.buildHandler()
-	s.http = srv
-}
-
-func (s *Service) buildHandler() http.Handler {
-	r := mux.NewRouter()
-	// path -> handlers
-
-	// hello request
-	hello := metrics.Counter(metrics.HelloRequestCounts, s.hello)
-	hello = metrics.Timer(metrics.HelloRequestTiming, hello)
-	r.HandleFunc("/hello", hello).Methods("GET")
-
-	// ==============
-	return r
-}
-
-func (s *Service) Run(ctx context.Context, wg *sync.WaitGroup) {
-	wg.Add(1)
-	log.Info("Service: begin run")
-
-	go func() {
-		defer wg.Done()
-		log.Debug("Service addr:", s.http.Addr)
-		err := s.http.ListenAndServe()
-		log.Info("main service end run:", err)
-	}()
-
-	go func() {
-		<-ctx.Done()
-		sdCtx, _ := context.WithTimeout(context.Background(), 5*time.Second) // nolint
-		err := s.http.Shutdown(sdCtx)
-		if err != nil {
-			log.Error("Service shutdown error:", err)
-		}
-	}()
-
-	s.readiness = true
+	readiness bool
 }
 
 func (s *Service) HealthCheck() error {
 	if !s.readiness {
-		return errors.New("Service is't ready yet")
+		return errors.New("service is't ready yet")
 	}
-	if s.runErr != nil {
-		return errors.New("run Service issue")
+	if s.storage == nil || s.storage.Check() != nil {
+		return errors.New("service: storage issue")
 	}
-	if s.db == nil || s.db.Ping() != nil {
-		return errors.New("db issue")
-	}
-	if s.cache == nil || s.cache.Ping() != nil {
-		return errors.New("cache issue")
+	if s.cache == nil || s.cache.Check() != nil {
+		return errors.New("service: cache issue")
 	}
 	return nil
 }

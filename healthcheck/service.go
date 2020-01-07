@@ -8,19 +8,15 @@ import (
 	"sync"
 	"time"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
-type Service interface {
-	Run(ctx context.Context, wg *sync.WaitGroup)
-}
-
-type service struct {
+type Service struct {
 	http *http.Server
 }
 
-func New(port int, healthChecks ...func() error) Service {
-	return &service{
+func New(port int, healthChecks ...func() error) *Service {
+	return &Service{
 		http: &http.Server{
 			Addr:    fmt.Sprintf(":%d", port),
 			Handler: buildHandler(healthChecks),
@@ -28,15 +24,15 @@ func New(port int, healthChecks ...func() error) Service {
 	}
 }
 
-func (s *service) Run(ctx context.Context, wg *sync.WaitGroup) {
+func (s *Service) Run(ctx context.Context, wg *sync.WaitGroup) {
 	wg.Add(1)
-	log.Info("healthcheck service: begin run")
+	log.Info("healthcheck Service: begin run")
 
 	go func() {
 		defer wg.Done()
-		log.Debug("healthcheck service addr:", s.http.Addr)
+		log.Debug("healthcheck Service addr:", s.http.Addr)
 		err := s.http.ListenAndServe()
-		log.Info("healthcheck service end run:", err)
+		log.Info("healthcheck service: end run > ", err)
 	}()
 
 	go func() {
@@ -44,7 +40,7 @@ func (s *service) Run(ctx context.Context, wg *sync.WaitGroup) {
 		sdCtx, _ := context.WithTimeout(context.Background(), 5*time.Second) // nolint
 		err := s.http.Shutdown(sdCtx)
 		if err != nil {
-			log.Error("healthcheck service shutdown error:", err.Error())
+			log.Info("healthcheck service shutdown (", err, ")")
 		}
 	}()
 }

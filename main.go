@@ -8,14 +8,18 @@ import (
 	"sync"
 	"syscall"
 
-	log "github.com/Sirupsen/logrus"
+	"github.com/akhripko/dummy/srvgql"
+	"github.com/akhripko/dummy/srvgrpc"
+	"github.com/akhripko/dummy/srvhttp"
+
+	"github.com/akhripko/dummy/cache/redis"
 	"github.com/akhripko/dummy/healthcheck"
 	"github.com/akhripko/dummy/metrics"
 	"github.com/akhripko/dummy/options"
 	"github.com/akhripko/dummy/prometheus"
 	"github.com/akhripko/dummy/service"
-	"github.com/akhripko/dummy/storage/cache/redis"
-	"github.com/akhripko/dummy/storage/sql/postgres"
+	"github.com/akhripko/dummy/storage/postgres"
+	log "github.com/sirupsen/logrus"
 )
 
 func main() {
@@ -34,30 +38,68 @@ func main() {
 	setupGracefulShutdown(cancel)
 	var wg = &sync.WaitGroup{}
 
-	// build db
-	db, err := postgres.New(ctx, postgres.Config(config.SQLDB))
+	// build storage
+	storage, err := postgres.New(ctx, config.SQLDB)
 	if err != nil {
 		log.Error("sql db init error:", err.Error())
 		os.Exit(1)
 	}
 	// build cache
-	ccl, err := redis.New(ctx, config.CacheAddr)
+	cache, err := redis.New(ctx, config.CacheAddr)
 	if err != nil {
 		log.Error("cache init error:", err.Error())
 		os.Exit(1)
 	}
 
-	// build main service
-	srv := service.New(config.Port, db, ccl)
-	// build prometheus service
-	prometheusSrv := prometheus.New(config.PrometheusPort)
-	// build healthcheck service
-	healthSrv := healthcheck.New(config.HealthCheckPort, srv.HealthCheck, prometheusSrv.HealthCheck)
+	//hellosrvClient, err := hellosrv.New(ctx, config.HelloSrvConf)
+	//if err != nil {
+	//	log.Error("hellosrv client init error:", err.Error())
+	//	os.Exit(1)
+	//}
 
-	// run service
+	// build main service
+	srv, err := service.New(storage, cache)
+	if err != nil {
+		log.Error("service init error:", err.Error())
+		os.Exit(1)
+	}
+
+	http, err := srvhttp.New(config.HTTPPort, srv)
+	if err != nil {
+		log.Error("http service init error:", err.Error())
+		os.Exit(1)
+	}
+
+	grpc, err := srvgrpc.New(config.GRPCPort, srv)
+	if err != nil {
+		log.Error("grpc service init error:", err.Error())
+		os.Exit(1)
+	}
+
+	gql, err := srvgql.New(config.GraphqlPort, srv)
+	if err != nil {
+		log.Error("graphql service init error:", err.Error())
+		os.Exit(1)
+	}
+
+	// build prometheus srv
+	prometheusSrv := prometheus.New(config.PrometheusPort)
+	// build healthcheck srv
+	healthSrv := healthcheck.New(
+		config.HealthCheckPort,
+		srv.HealthCheck,
+		prometheusSrv.HealthCheck,
+		http.HealthCheck,
+		gql.HealthCheck,
+		grpc.HealthCheck,
+	)
+
+	// run srv
+	http.Run(ctx, wg)
+	grpc.Run(ctx, wg)
+	gql.Run(ctx, wg)
 	healthSrv.Run(ctx, wg)
 	prometheusSrv.Run(ctx, wg)
-	srv.Run(ctx, wg)
 
 	// wait while services work
 	wg.Wait()
