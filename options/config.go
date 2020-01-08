@@ -1,7 +1,7 @@
 package options
 
 import (
-	"github.com/akhripko/dummy/remote/grpc/hellosrv"
+	"github.com/akhripko/dummy/providers/grpc/hellosrv"
 	"github.com/akhripko/dummy/storage/postgres"
 )
 

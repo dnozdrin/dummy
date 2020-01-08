@@ -37,15 +37,15 @@ func New(ctx context.Context, cfg Config) (*Client, error) {
 		//grpc.WithBlock(),
 	)
 	if err != nil {
-		log.Info("remote.grpc.hellosrv init err:", err)
-		return nil, errors.Wrap(err, "remote.grpc.hellosrv: failed to init connection")
+		log.Info("providers.grpc.hellosrv init err:", err)
+		return nil, errors.Wrap(err, "providers.grpc.hellosrv: failed to init connection")
 	}
 
 	// handle shutdown
 	go func() {
 		<-ctx.Done()
 		if s.conn != nil {
-			log.Info("remote.grpc.hellosrv: close connection")
+			log.Info("providers.grpc.hellosrv: close connection")
 			s.conn.Close()
 		}
 	}()
