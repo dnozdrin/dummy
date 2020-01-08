@@ -95,7 +95,10 @@ func (p *Producer) HealthCheck() error {
 // It is an example of how we can implement the message send to Kafka topic.
 // Feel free to change this implementation if you need to add more options
 // like headers, timestamp, partition etc.
-func (p *Producer) Produce(key, value []byte) {
+func (p *Producer) Produce(key, value []byte) error {
+	if err := p.producer.GetFatalError(); err != nil {
+		return errors.Wrap(err, "the client instance raised a fatal error")
+	}
 	p.producer.ProduceChannel() <- &kafka.Message{
 		TopicPartition: kafka.TopicPartition{
 			Topic:     &p.topic,
@@ -104,10 +107,14 @@ func (p *Producer) Produce(key, value []byte) {
 		Value: value,
 		Key:   key,
 	}
+	return nil
 }
 
 // The same as Produce but imitates synchronous send
 func (p *Producer) ProduceSync(key, value []byte) error {
+	if err := p.producer.GetFatalError(); err != nil {
+		return errors.Wrap(err, "the client instance raised a fatal error")
+	}
 	deliveryChan := make(chan kafka.Event)
 	defer close(deliveryChan)
 	err := p.producer.Produce(&kafka.Message{
