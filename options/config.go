@@ -1,6 +1,7 @@
 package options
 
 import (
+	"github.com/akhripko/dummy/kafka/producer"
 	"github.com/akhripko/dummy/providers/grpc/hellosrv"
 	"github.com/akhripko/dummy/storage/postgres"
 )
@@ -15,6 +16,8 @@ type Config struct {
 	SQLDB           postgres.Config
 	CacheAddr       string
 	HelloSrvConf    hellosrv.Config
+	KafkaTopic      KafkaTopic
+	KafkaProducer   producer.Config
 }
 
 type SQLDBConfig struct {
@@ -24,4 +27,8 @@ type SQLDBConfig struct {
 	Pass         string
 	DBName       string
 	MaxOpenConns int
+}
+
+type KafkaTopic struct {
+	Hello string
 }
