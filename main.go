@@ -51,6 +51,12 @@ func main() {
 		os.Exit(1)
 	}
 
+	//p, err := producer.New(ctx, wg, config.KafkaTopic.Hello, config.KafkaProducer)
+	//if err != nil {
+	//	log.Error("kafka producer init error:", err.Error())
+	//	os.Exit(1)
+	//}
+
 	//hellosrvClient, err := hellosrv.New(ctx, config.HelloSrvConf)
 	//if err != nil {
 	//	log.Error("hellosrv client init error:", err.Error())

@@ -1,6 +1,7 @@
 package options
 
 import (
+	"github.com/akhripko/dummy/kafka/producer"
 	"github.com/akhripko/dummy/providers/grpc/hellosrv"
 	"github.com/akhripko/dummy/storage/postgres"
 	"github.com/spf13/viper"
@@ -31,6 +32,17 @@ func ReadEnv() *Config {
 
 	viper.SetDefault("CACHE_ADDR", ":6379")
 
+	viper.SetDefault("KAFKA_BOOTSTRAP_SERVERS", "localhost:9092")
+	viper.SetDefault("KAFKA_SSL_ENABLED", false)
+	viper.SetDefault("KAFKA_SSL_CA_LOCATION", "")
+	viper.SetDefault("KAFKA_SSL_CERTIFICATE_LOCATION", "")
+	viper.SetDefault("KAFKA_SSL_KEY_LOCATION", "")
+	viper.SetDefault("KAFKA_PRODUCER_IDEMPOTENCE", false)
+	viper.SetDefault("KAFKA_PRODUCER_READ_EVENTS", true)
+	viper.SetDefault("KAFKA_PRODUCER_FLUSH_TIMEOUT_MS", 15000)
+
+	viper.SetDefault("KAFKA_TOPIC_TEST", "hello-topic")
+
 	return &Config{
 		LogLevel:        viper.GetString("LOG_LEVEL"),
 		HTTPPort:        viper.GetInt("HTTP_PORT"),
@@ -48,5 +60,18 @@ func ReadEnv() *Config {
 		},
 		CacheAddr:    viper.GetString("CACHE_ADDR"),
 		HelloSrvConf: hellosrv.Config{Target: viper.GetString("HELLO_SRV_TARGET")},
+		KafkaTopic:   KafkaTopic{Hello: viper.GetString("KAFKA_TOPIC_TEST")},
+		KafkaProducer: producer.Config{
+			Idempotence:      viper.GetBool("KAFKA_PRODUCER_IDEMPOTENCE"),
+			ReadEvents:       viper.GetBool("KAFKA_PRODUCER_READ_EVENTS"),
+			FlushTimeoutMs:   viper.GetInt("KAFKA_PRODUCER_FLUSH_TIMEOUT_MS"),
+			BootstrapServers: viper.GetString("KAFKA_BOOTSTRAP_SERVERS"),
+			SSL: producer.SSLConfig{
+				Enabled:             viper.GetBool("KAFKA_SSL_ENABLED"),
+				KeyLocation:         viper.GetString("KAFKA_SSL_KEY_LOCATION"),
+				CertificateLocation: viper.GetString("KAFKA_SSL_CERTIFICATE_LOCATION"),
+				CALocation:          viper.GetString("KAFKA_SSL_CA_LOCATION"),
+			},
+		},
 	}
 }
