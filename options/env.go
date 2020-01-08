@@ -1,6 +1,7 @@
 package options
 
 import (
+	"github.com/akhripko/dummy/kafka/consumer"
 	"github.com/akhripko/dummy/kafka/producer"
 	"github.com/akhripko/dummy/providers/grpc/hellosrv"
 	"github.com/akhripko/dummy/storage/postgres"
@@ -43,6 +44,12 @@ func ReadEnv() *Config {
 
 	viper.SetDefault("KAFKA_TOPIC_TEST", "hello-topic")
 
+	viper.SetDefault("KAFKA_CONSUMER_POLL_TIMEOUT_MS", 300)
+	viper.SetDefault("KAFKA_CONSUMER_NAME", "hello")
+	viper.SetDefault("KAFKA_CONSUMER_GROUP_ID", "dummy")
+	viper.SetDefault("KAFKA_CONSUMER_SESSION_TIMEOUT_MS", 6000)
+	viper.SetDefault("KAFKA_CONSUMER_AUTO_OFFSET_RESET", "earliest")
+
 	return &Config{
 		LogLevel:        viper.GetString("LOG_LEVEL"),
 		HTTPPort:        viper.GetInt("HTTP_PORT"),
@@ -67,6 +74,20 @@ func ReadEnv() *Config {
 			FlushTimeoutMs:   viper.GetInt("KAFKA_PRODUCER_FLUSH_TIMEOUT_MS"),
 			BootstrapServers: viper.GetString("KAFKA_BOOTSTRAP_SERVERS"),
 			SSL: producer.SSLConfig{
+				Enabled:             viper.GetBool("KAFKA_SSL_ENABLED"),
+				KeyLocation:         viper.GetString("KAFKA_SSL_KEY_LOCATION"),
+				CertificateLocation: viper.GetString("KAFKA_SSL_CERTIFICATE_LOCATION"),
+				CALocation:          viper.GetString("KAFKA_SSL_CA_LOCATION"),
+			},
+		},
+		KafkaConsumer: consumer.Config{
+			BootstrapServers: viper.GetString("KAFKA_BOOTSTRAP_SERVERS"),
+			PollTimeoutMs:    viper.GetInt("KAFKA_CONSUMER_POLL_TIMEOUT_MS"),
+			Name:             viper.GetString("KAFKA_CONSUMER_NAME"),
+			GroupID:          viper.GetString("KAFKA_CONSUMER_GROUP_ID"),
+			SessionTimeoutMs: viper.GetString("KAFKA_CONSUMER_SESSION_TIMEOUT_MS"),
+			AutoOffsetReset:  viper.GetString("KAFKA_CONSUMER_AUTO_OFFSET_RESET"),
+			SSL: consumer.SSLConfig{
 				Enabled:             viper.GetBool("KAFKA_SSL_ENABLED"),
 				KeyLocation:         viper.GetString("KAFKA_SSL_KEY_LOCATION"),
 				CertificateLocation: viper.GetString("KAFKA_SSL_CERTIFICATE_LOCATION"),

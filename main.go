@@ -57,6 +57,12 @@ func main() {
 	//	os.Exit(1)
 	//}
 
+	//helloConsumer, err := consumer.New(config.KafkaConsumer, []string{config.KafkaTopic.Hello}, nil)
+	//if err != nil {
+	//	log.Error("kafka consumer init error:", err.Error())
+	//	os.Exit(1)
+	//}
+
 	//hellosrvClient, err := hellosrv.New(ctx, config.HelloSrvConf)
 	//if err != nil {
 	//	log.Error("hellosrv client init error:", err.Error())
@@ -98,6 +104,7 @@ func main() {
 		http.HealthCheck,
 		gql.HealthCheck,
 		grpc.HealthCheck,
+		//helloConsumer.HealthCheck,
 	)
 
 	// run srv
@@ -106,6 +113,7 @@ func main() {
 	gql.Run(ctx, wg)
 	healthSrv.Run(ctx, wg)
 	prometheusSrv.Run(ctx, wg)
+	//helloConsumer.Run(ctx, wg)
 
 	// wait while services work
 	wg.Wait()

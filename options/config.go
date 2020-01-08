@@ -1,6 +1,7 @@
 package options
 
 import (
+	"github.com/akhripko/dummy/kafka/consumer"
 	"github.com/akhripko/dummy/kafka/producer"
 	"github.com/akhripko/dummy/providers/grpc/hellosrv"
 	"github.com/akhripko/dummy/storage/postgres"
@@ -18,6 +19,7 @@ type Config struct {
 	HelloSrvConf    hellosrv.Config
 	KafkaTopic      KafkaTopic
 	KafkaProducer   producer.Config
+	KafkaConsumer   consumer.Config
 }
 
 type SQLDBConfig struct {
