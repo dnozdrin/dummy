@@ -91,8 +91,5 @@ func (s *HTTPSrv) HealthCheck() error {
 	if s.runErr != nil {
 		return errors.New("gql service: run issue")
 	}
-	if s.service == nil || s.service.HealthCheck() != nil {
-		return errors.New("gql service: storage issue")
-	}
 	return nil
 }

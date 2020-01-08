@@ -71,8 +71,5 @@ func (s *Srv) HealthCheck() error {
 	if s.runErr != nil {
 		return errors.New("grpc service: run issue")
 	}
-	if s.service == nil || s.service.HealthCheck() != nil {
-		return errors.New("grpc srv: service issue")
-	}
 	return nil
 }

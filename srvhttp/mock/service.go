@@ -33,20 +33,6 @@ func (m *MockService) EXPECT() *MockServiceMockRecorder {
 	return m.recorder
 }
 
-// HealthCheck mocks base method
-func (m *MockService) HealthCheck() error {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "HealthCheck")
-	ret0, _ := ret[0].(error)
-	return ret0
-}
-
-// HealthCheck indicates an expected call of HealthCheck
-func (mr *MockServiceMockRecorder) HealthCheck() *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "HealthCheck", reflect.TypeOf((*MockService)(nil).HealthCheck))
-}
-
 // Hello mocks base method
 func (m *MockService) Hello(name string) (*models.HelloMessage, error) {
 	m.ctrl.T.Helper()

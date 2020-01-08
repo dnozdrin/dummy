@@ -123,7 +123,7 @@ func (m *MockCache) WriteTTL(name, msg string, ttl int) error {
 }
 
 // WriteTTL indicates an expected call of WriteTTL
-func (mr *MockCacheMockRecorder) Write(name, msg, ttl interface{}) *gomock.Call {
+func (mr *MockCacheMockRecorder) WriteTTL(name, msg, ttl interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "WriteTTL", reflect.TypeOf((*MockCache)(nil).WriteTTL), name, msg, ttl)
 }

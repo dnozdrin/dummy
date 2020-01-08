@@ -80,8 +80,5 @@ func (s *HTTPSrv) HealthCheck() error {
 	if s.runErr != nil {
 		return errors.New("http service: run issue")
 	}
-	if s.service == nil || s.service.HealthCheck() != nil {
-		return errors.New("http service: storage issue")
-	}
 	return nil
 }

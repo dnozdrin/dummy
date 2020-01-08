@@ -99,7 +99,8 @@ func main() {
 	// build healthcheck srv
 	healthSrv := healthcheck.New(
 		config.HealthCheckPort,
-		srv.HealthCheck,
+		storage.Check,
+		cache.Check,
 		prometheusSrv.HealthCheck,
 		http.HealthCheck,
 		gql.HealthCheck,

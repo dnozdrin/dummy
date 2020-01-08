@@ -2,7 +2,6 @@ package service
 
 import (
 	"github.com/akhripko/dummy/models"
-	"github.com/pkg/errors"
 )
 
 type Storage interface {
@@ -31,17 +30,4 @@ type Service struct {
 	storage   Storage
 	cache     Cache
 	readiness bool
-}
-
-func (s *Service) HealthCheck() error {
-	if !s.readiness {
-		return errors.New("service is't ready yet")
-	}
-	if s.storage == nil || s.storage.Check() != nil {
-		return errors.New("service: storage issue")
-	}
-	if s.cache == nil || s.cache.Check() != nil {
-		return errors.New("service: cache issue")
-	}
-	return nil
 }
