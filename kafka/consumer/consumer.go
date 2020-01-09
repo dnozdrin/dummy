@@ -3,10 +3,11 @@ package consumer
 import (
 	"context"
 	"errors"
-	"github.com/confluentinc/confluent-kafka-go/kafka"
-	log "github.com/sirupsen/logrus"
 	"sync"
 	"time"
+
+	"github.com/confluentinc/confluent-kafka-go/kafka"
+	log "github.com/sirupsen/logrus"
 )
 
 type Config struct {
@@ -71,7 +72,7 @@ func New(config Config, topics []string, handler Handler) (*Consumer, error) {
 }
 
 func (c *Consumer) Run(ctx context.Context, wg *sync.WaitGroup) {
-	log.Info("kafka consumer '%s': begin run", c.name)
+	log.Infof("kafka consumer '%s': begin run", c.name)
 	err := c.consumer.SubscribeTopics(c.topics, nil)
 	if err != nil {
 		log.Errorf("kafka consumer '%s': end run: failed to subscribe to topics: %v", c.name, err)

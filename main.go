@@ -8,16 +8,16 @@ import (
 	"sync"
 	"syscall"
 
-	"github.com/akhripko/dummy/srvgql"
-	"github.com/akhripko/dummy/srvgrpc"
-	"github.com/akhripko/dummy/srvhttp"
+	"github.com/akhripko/dummy/srv/srvgql"
+	"github.com/akhripko/dummy/srv/srvgrpc"
+	"github.com/akhripko/dummy/srv/srvhttp"
 
 	"github.com/akhripko/dummy/cache/redis"
-	"github.com/akhripko/dummy/healthcheck"
 	"github.com/akhripko/dummy/metrics"
 	"github.com/akhripko/dummy/options"
-	"github.com/akhripko/dummy/prometheus"
 	"github.com/akhripko/dummy/service"
+	"github.com/akhripko/dummy/srv/healthcheck"
+	"github.com/akhripko/dummy/srv/prometheus"
 	"github.com/akhripko/dummy/storage/postgres"
 	log "github.com/sirupsen/logrus"
 )

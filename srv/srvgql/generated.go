@@ -6,13 +6,13 @@ import (
 	"bytes"
 	"context"
 	"errors"
+	models2 "github.com/akhripko/dummy/srv/srvgql/models"
 	"strconv"
 	"sync"
 	"sync/atomic"
 
 	"github.com/99designs/gqlgen/graphql"
 	"github.com/99designs/gqlgen/graphql/introspection"
-	"github.com/akhripko/dummy/srvgql/models"
 	"github.com/vektah/gqlparser"
 	"github.com/vektah/gqlparser/ast"
 )
@@ -58,7 +58,7 @@ type ComplexityRoot struct {
 }
 
 type QueryResolver interface {
-	Hello(ctx context.Context, name string) (*models.Message, error)
+	Hello(ctx context.Context, name string) (*models2.Message, error)
 }
 
 type executableSchema struct {
@@ -252,7 +252,7 @@ func (ec *executionContext) field___Type_fields_args(ctx context.Context, rawArg
 
 // region    **************************** field.gotpl *****************************
 
-func (ec *executionContext) _Error_code(ctx context.Context, field graphql.CollectedField, obj *models.Error) (ret graphql.Marshaler) {
+func (ec *executionContext) _Error_code(ctx context.Context, field graphql.CollectedField, obj *models2.Error) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -289,7 +289,7 @@ func (ec *executionContext) _Error_code(ctx context.Context, field graphql.Colle
 	return ec.marshalNInt2int(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Error_message(ctx context.Context, field graphql.CollectedField, obj *models.Error) (ret graphql.Marshaler) {
+func (ec *executionContext) _Error_message(ctx context.Context, field graphql.CollectedField, obj *models2.Error) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -326,7 +326,7 @@ func (ec *executionContext) _Error_message(ctx context.Context, field graphql.Co
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Message_data(ctx context.Context, field graphql.CollectedField, obj *models.Message) (ret graphql.Marshaler) {
+func (ec *executionContext) _Message_data(ctx context.Context, field graphql.CollectedField, obj *models2.Message) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -363,7 +363,7 @@ func (ec *executionContext) _Message_data(ctx context.Context, field graphql.Col
 	return ec.marshalNString2string(ctx, field.Selections, res)
 }
 
-func (ec *executionContext) _Message_error(ctx context.Context, field graphql.CollectedField, obj *models.Message) (ret graphql.Marshaler) {
+func (ec *executionContext) _Message_error(ctx context.Context, field graphql.CollectedField, obj *models2.Message) (ret graphql.Marshaler) {
 	ctx = ec.Tracer.StartFieldExecution(ctx, field)
 	defer func() {
 		if r := recover(); r != nil {
@@ -391,7 +391,7 @@ func (ec *executionContext) _Message_error(ctx context.Context, field graphql.Co
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(*models.Error)
+	res := resTmp.(*models2.Error)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalOError2ᚖgithubᚗcomᚋakhripkoᚋdummyᚋsrvgqlᚋmodelsᚐError(ctx, field.Selections, res)
@@ -435,7 +435,7 @@ func (ec *executionContext) _Query_hello(ctx context.Context, field graphql.Coll
 		}
 		return graphql.Null
 	}
-	res := resTmp.(*models.Message)
+	res := resTmp.(*models2.Message)
 	rctx.Result = res
 	ctx = ec.Tracer.StartFieldChildExecution(ctx)
 	return ec.marshalNMessage2ᚖgithubᚗcomᚋakhripkoᚋdummyᚋsrvgqlᚋmodelsᚐMessage(ctx, field.Selections, res)
@@ -1677,7 +1677,7 @@ func (ec *executionContext) ___Type_ofType(ctx context.Context, field graphql.Co
 
 var errorImplementors = []string{"Error"}
 
-func (ec *executionContext) _Error(ctx context.Context, sel ast.SelectionSet, obj *models.Error) graphql.Marshaler {
+func (ec *executionContext) _Error(ctx context.Context, sel ast.SelectionSet, obj *models2.Error) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.RequestContext, sel, errorImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -1709,7 +1709,7 @@ func (ec *executionContext) _Error(ctx context.Context, sel ast.SelectionSet, ob
 
 var messageImplementors = []string{"Message"}
 
-func (ec *executionContext) _Message(ctx context.Context, sel ast.SelectionSet, obj *models.Message) graphql.Marshaler {
+func (ec *executionContext) _Message(ctx context.Context, sel ast.SelectionSet, obj *models2.Message) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.RequestContext, sel, messageImplementors)
 
 	out := graphql.NewFieldSet(fields)
@@ -2053,11 +2053,11 @@ func (ec *executionContext) marshalNInt2int(ctx context.Context, sel ast.Selecti
 	return res
 }
 
-func (ec *executionContext) marshalNMessage2githubᚗcomᚋakhripkoᚋdummyᚋsrvgqlᚋmodelsᚐMessage(ctx context.Context, sel ast.SelectionSet, v models.Message) graphql.Marshaler {
+func (ec *executionContext) marshalNMessage2githubᚗcomᚋakhripkoᚋdummyᚋsrvgqlᚋmodelsᚐMessage(ctx context.Context, sel ast.SelectionSet, v models2.Message) graphql.Marshaler {
 	return ec._Message(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalNMessage2ᚖgithubᚗcomᚋakhripkoᚋdummyᚋsrvgqlᚋmodelsᚐMessage(ctx context.Context, sel ast.SelectionSet, v *models.Message) graphql.Marshaler {
+func (ec *executionContext) marshalNMessage2ᚖgithubᚗcomᚋakhripkoᚋdummyᚋsrvgqlᚋmodelsᚐMessage(ctx context.Context, sel ast.SelectionSet, v *models2.Message) graphql.Marshaler {
 	if v == nil {
 		if !ec.HasError(graphql.GetResolverContext(ctx)) {
 			ec.Errorf(ctx, "must not be null")
@@ -2330,11 +2330,11 @@ func (ec *executionContext) marshalOBoolean2ᚖbool(ctx context.Context, sel ast
 	return ec.marshalOBoolean2bool(ctx, sel, *v)
 }
 
-func (ec *executionContext) marshalOError2githubᚗcomᚋakhripkoᚋdummyᚋsrvgqlᚋmodelsᚐError(ctx context.Context, sel ast.SelectionSet, v models.Error) graphql.Marshaler {
+func (ec *executionContext) marshalOError2githubᚗcomᚋakhripkoᚋdummyᚋsrvgqlᚋmodelsᚐError(ctx context.Context, sel ast.SelectionSet, v models2.Error) graphql.Marshaler {
 	return ec._Error(ctx, sel, &v)
 }
 
-func (ec *executionContext) marshalOError2ᚖgithubᚗcomᚋakhripkoᚋdummyᚋsrvgqlᚋmodelsᚐError(ctx context.Context, sel ast.SelectionSet, v *models.Error) graphql.Marshaler {
+func (ec *executionContext) marshalOError2ᚖgithubᚗcomᚋakhripkoᚋdummyᚋsrvgqlᚋmodelsᚐError(ctx context.Context, sel ast.SelectionSet, v *models2.Error) graphql.Marshaler {
 	if v == nil {
 		return graphql.Null
 	}
