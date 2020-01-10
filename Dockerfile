@@ -3,10 +3,9 @@
 ############################
 FROM golang:1.13.5-alpine as builder
 
-# Install SSL ca certificates.
+# Install SSL ca certificates and librdkafka
 # Ca-certificates is required to call HTTPS endpoints.
-RUN apk update && apk add --no-cache ca-certificates pkgconfig
-
+RUN apk update && apk add --no-cache ca-certificates pkgconfig librdkafka-dev g++
 
 COPY . $GOPATH/src/github.com/companyname/dummy_project/
 WORKDIR $GOPATH/src/github.com/companyname/dummy_project/
@@ -15,13 +14,16 @@ WORKDIR $GOPATH/src/github.com/companyname/dummy_project/
 # RUN go mod download
 # Build the binary
 
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o /go/bin/svc
+RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -mod=vendor -a -o /go/bin/svc
 
 
 ############################
 # STEP 2 build a small image
 ############################
-FROM scratch
+FROM alpine:3.10
+
+# Installing kafka dependencies
+RUN apk update && apk add --no-cache ca-certificates librdkafka-dev
 
 # Import from builder.
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
